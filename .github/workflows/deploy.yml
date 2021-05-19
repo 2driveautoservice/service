@@ -13,13 +13,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v1
       - name: Deploy CarCatch web application
-        uses: appleboy/ssh-action@v0.1.2
+        uses: appleboy/scp-action@master
         with:
-          host: ${{secrets.SSH_HOST}} #ipv4 address of droplet
-          key: ${{secrets.SSH_KEY}} #Private or public key of server
-          username: ${{secrets.SSH_USERNAME}} #Name of user on droplet
-          
+          host: ${{ secrets.SSH_HOST }} #ipv4 address of droplet
+          key: ${{ secrets.SSH_KEY }} #Private or public key of server
+          username: ${{ secrets.SSH_USERNAME }} #Name of user on droplet
+          port: ${{ secrets.SSH_PORT }} #port to ssh on (default)
           script:
             echo 'Deployment to digitalocean droplet CarCatch is successful'
      
