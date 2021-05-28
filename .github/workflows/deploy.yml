@@ -26,6 +26,7 @@ jobs:
             cd ~/repo/service
             git fetch origin master
             git reset --hard origin/master
+            echo 'Finished updating the production repo'
             
             # Set up secret production database settings locally
             export DJANGO_SETTINGS_MODULE=source.settings.prod
@@ -34,19 +35,23 @@ jobs:
             export DATABASE_PASSWORD = ${{ secrets.DATABASE_PASSWORD }}
             export DATABASE_HOST = ${{ secrets.DATABASE_HOST }}
             export DATABASE_PORT = ${{ secrets.DATABASE_PORT }}
+            echo 'Finished setting environment variables locally'
             
             # Update database using liquibase
             cd liquibase
             liquibase --defaultsFile=liquibase-prod.properties update
+            echo 'Finished updating database with liquibase'
             
             # Install Django project dependencies locally in a virtualenv
             pipenv install
             pipenv shell
+            echo 'Finished installing dependencies into virtualenvironment'
             
             #Check to see if gunicorn is now a dependency
             gunicorn -v
             echo 'gunicorn was sucessfully installed
             quit
+            echo 'Completed deployment successfully'
             
             
             
