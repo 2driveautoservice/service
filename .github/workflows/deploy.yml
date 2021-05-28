@@ -31,11 +31,11 @@ jobs:
             
             # Set up secret production database settings locally
             export DJANGO_SETTINGS_MODULE=source.settings.prod
-            export DATABASE_NAME= ${{ secrets.DATABASE_NAME }}
-            export DATABASE_USERNAME= ${{ secrets.DATABASE_USERNAME }}
-            export DATABASE_PASSWORD = ${{ secrets.DATABASE_PASSWORD }}
-            export DATABASE_HOST = ${{ secrets.DATABASE_HOST }}
-            export DATABASE_PORT = ${{ secrets.DATABASE_PORT }}
+            export DATABASE_NAME=${{ secrets.DATABASE_NAME }}
+            export DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}
+            export DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+            export DATABASE_HOST=${{ secrets.DATABASE_HOST }}
+            export DATABASE_PORT=${{ secrets.DATABASE_PORT }}
             echo 'Finished setting environment variables locally'
             
             # Update database using liquibase
