@@ -12,9 +12,20 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
+    steps:       
       - uses: actions/checkout@v1
-      - name: Deploy CarCatch web application
+      
+      - name: Update database from liquibase
+        uses: liquibase/liquibase-github-action@v1
+        with:
+          operation: 'update' #Applies new changesets from liquibase changelog
+          classpath: 'liquibase'
+          changeLogFile: 'dbchangelog.postgresql.sql'
+          username: ${{ secrets.DATABASE_USERNAME }}
+          password: ${{ secrets.DATABASE_PASSWORD }}
+          url: ${{ secrets.DATABASE_URL }} #jdbc url for droplet database
+          
+      - name: Update droplet service repo, retrieve secret constants, update dependencies in virtual environment and run python web application
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }} #ipv4 address of droplet
@@ -22,5 +33,21 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }} #Name of user on droplet
           port: ${{ secrets.SSH_PORT }} #port to ssh on (default)
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          script: echo 'Deployment to digitalocean droplet CarCatch is successful'
+          script: | 
+            cd repo/service
+            git fetch origin master
+            git reset --hard origin/master
+            export DJANGO_SETTINGS_MODULE=source.settings.prod
+            export DATABASE_NAME= ${{ secrets.DATABASE_NAME }}
+            export DATABASE_USERNAME= ${{ secrets.DATABASE_USERNAME }}
+            export DATABASE_PASSWORD = ${{ secrets.DATABASE_PASSWORD }}
+            export DATABASE_HOST = ${{ secrets.DATABASE_HOST }}
+            export DATABASE_PORT = ${{ secrets.DATABASE_PORT }}
+            pipenv install
+            pipenv shell
+            gunicorn -v
+            quit
+            
+            
+            
      
