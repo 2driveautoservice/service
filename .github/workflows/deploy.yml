@@ -21,7 +21,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }} #Private or public key of server
           username: ${{ secrets.SSH_USERNAME }} #Name of user on droplet
           port: ${{ secrets.SSH_PORT }} #port to ssh on (default)
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: | 
             # Update production repo
             cd ~/repo/service
