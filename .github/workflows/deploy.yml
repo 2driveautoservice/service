@@ -25,8 +25,8 @@ jobs:
           script: | 
             # Update production repo
             cd ~/repo/service
-            git fetch origin master
-            git reset --hard origin/master
+            git fetch origin master --quiet # --quiet prevents output
+            git reset --hard origin/master --quiet # --quiet prevents output
             echo 'Finished updating the production repo'
             
             # Set up secret production database settings locally
