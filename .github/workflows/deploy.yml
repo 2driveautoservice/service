@@ -24,7 +24,7 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: | 
             # Update production repo
-            cd repo/service
+            cd ~/repo/service
             git fetch origin master
             git reset --hard origin/master
             
