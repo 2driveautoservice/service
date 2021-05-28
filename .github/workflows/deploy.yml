@@ -14,17 +14,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:       
       - uses: actions/checkout@v1
+      
       - name: Update database from liquibase
         uses: liquibase/liquibase-github-action@v1
         with:
-          operation: 'update'
-          classpath: 'example/changelogs'
-          changeLogFile: 'samplechangelog.h2.sql'
+          operation: 'update' #Applies new changesets from liquibase changelog
+          classpath: 'liquibase'
+          changeLogFile: 'dbchangelog.postgresql.sql'
           username: ${{ secrets.DATABASE_USERNAME }}
           password: ${{ secrets.DATABASE_PASSWORD }}
-          url: ${{ secrets.DATABASE_URL }}
+          url: ${{ secrets.DATABASE_URL }} #jdbc url for droplet database
           
-      - name: Update droplet service repo and run web application
+      - name: Update droplet service repo, retrieve secret constants, update dependencies in virtual environment and run python web application
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }} #ipv4 address of droplet
@@ -43,6 +44,9 @@ jobs:
             export DATABASE_HOST = ${{ secrets.DATABASE_HOST }}
             export DATABASE_PORT = ${{ secrets.DATABASE_PORT }}
             pipenv install
+            pipenv shell
+            gunicorn -v
+            quit
             
             
             
