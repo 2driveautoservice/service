@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Deploy code changes that were merged with master to production
 
 # Controls when the action will run. 
 on:
@@ -14,17 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:       
       - uses: actions/checkout@v2
-      - name: Update database from liquibase
-        uses: liquibase/liquibase-github-action@v1
-        with:
-          operation: 'update' #Applies new changesets from liquibase changelog
-          classpath: 'liquibase'
-          changeLogFile: 'dbchangelog.postgresql.sql'
-          username: ${{ secrets.DATABASE_USERNAME }}
-          password: ${{ secrets.DATABASE_PASSWORD }}
-          url: ${{ secrets.DATABASE_URL }} #jdbc url for droplet database
-          
-      - name: Update droplet service repo, retrieve secret constants, update dependencies in virtual environment and run python web application
+      - name: Run web application
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }} #ipv4 address of droplet
@@ -33,18 +23,30 @@ jobs:
           port: ${{ secrets.SSH_PORT }} #port to ssh on (default)
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: | 
+            # Update production repo
             cd repo/service
             git fetch origin master
             git reset --hard origin/master
+            
+            # Set up secret production database settings locally
             export DJANGO_SETTINGS_MODULE=source.settings.prod
             export DATABASE_NAME= ${{ secrets.DATABASE_NAME }}
             export DATABASE_USERNAME= ${{ secrets.DATABASE_USERNAME }}
             export DATABASE_PASSWORD = ${{ secrets.DATABASE_PASSWORD }}
             export DATABASE_HOST = ${{ secrets.DATABASE_HOST }}
             export DATABASE_PORT = ${{ secrets.DATABASE_PORT }}
+            
+            # Update database using liquibase
+            cd liquibase
+            liquibase --defaultsFile=liquibase-prod.properties update
+            
+            # Install Django project dependencies locally in a virtualenv
             pipenv install
             pipenv shell
+            
+            #Check to see if gunicorn is now a dependency
             gunicorn -v
+            echo 'gunicorn was sucessfully installed
             quit
             
             
