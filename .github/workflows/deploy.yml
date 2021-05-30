@@ -51,7 +51,7 @@ jobs:
             #Check to see if gunicorn is now a dependency
             gunicorn -v
             echo 'gunicorn was sucessfully installed
-            quit
+            deactivate
             echo 'Completed deployment successfully'
             
             
