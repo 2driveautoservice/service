@@ -40,7 +40,7 @@ jobs:
             
             # Update database using liquibase
             cd liquibase
-            /usr/lib/liquibase --defaultsFile=liquibase-prod.properties update
+            liquibase --defaultsFile=liquibase-prod.properties update
             echo 'Finished updating database with liquibase'
             
             # Install Django project dependencies locally in a virtualenv
