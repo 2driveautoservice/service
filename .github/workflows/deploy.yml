@@ -17,10 +17,10 @@ jobs:
       - name: Run web application
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SSH_HOST }} #ipv4 address of droplet
-          key: ${{ secrets.SSH_KEY }} #Private or public key of server
-          username: ${{ secrets.SSH_USERNAME }} #Name of user on droplet
-          port: ${{ secrets.SSH_PORT }} #port to ssh on (default)
+          host: ${{ secrets.SSH_HOST }} 
+          key: ${{ secrets.SSH_KEY }} 
+          username: ${{ secrets.SSH_USERNAME }} 
+          port: ${{ secrets.SSH_PORT }} 
           script_stop: true
           script: | 
             # Update production repo
