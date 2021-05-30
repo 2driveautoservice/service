@@ -45,8 +45,8 @@ jobs:
             
             # Install Django project dependencies locally in a virtualenv
             pipenv install
-            pipenv shell
-            echo 'Finished installing dependencies into virtualenvironment'
+            # pipenv shell
+            echo 'Finished installing dependencies into virtual environment'
             
             #Check to see if gunicorn is now a dependency
             gunicorn -v
