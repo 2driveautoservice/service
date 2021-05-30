@@ -27,6 +27,7 @@ jobs:
             cd ~/repo/service
             git fetch origin master --quiet # --quiet prevents output
             git reset --hard origin/master --quiet # --quiet prevents output
+            source ~/.bashrc
             echo 'Finished updating the production repo'
             
             # Set up secret production database settings locally
