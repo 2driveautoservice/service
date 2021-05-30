@@ -40,7 +40,7 @@ jobs:
             echo 'Finished setting environment variables locally'
             
             # Update database using liquibase
-            cd liquibase
+            # cd liquibase
             liquibase --defaultsFile=liquibase-prod.properties update
             echo 'Finished updating database with liquibase'
             
