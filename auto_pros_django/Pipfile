@@ -10,6 +10,7 @@ django-cors-headers = "*"
 djoser = "*"
 psycopg2-binary = "*"
 pillow = "*"
+gunicorn = "*"
 
 [dev-packages]
 
