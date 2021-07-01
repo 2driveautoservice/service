@@ -5,23 +5,24 @@ import os
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['134.122.43.162', 'localhost']
+ALLOWED_HOSTS = ['autopros.app', 'localhost']
 
-HOST_DOMAIN = 'http://' +  ALLOWED_HOSTS[0] + ':8000'
+HOST_DOMAIN = 'https://' +  ALLOWED_HOSTS[0]
 
 # Luke: modified for cors
 CORS_ALLOWED_ORIGINS = [
-    "http://134.122.43.162:8080",
+    "http://localhost:8080",
+    "https://autopros.app"
 ]
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DATABASE_NAME'),
-        'USER': os.getenv('DATABASE_USERNAME'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': os.getenv('DATABASE_HOST'),
-        'PORT': os.getenv('DATABASE_PORT')
+        'NAME': 'servicedatabase',
+        'USER': 'luke',
+        'PASSWORD': 'MadebyCAR1!',
+        'HOST': 'localhost',
+        'PORT': ''
     }
 }
 
@@ -30,3 +31,4 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     )
 }
+
