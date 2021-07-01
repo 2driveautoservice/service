@@ -20,9 +20,13 @@ from django.conf.urls.static import static
 from django.urls import path, include
 
 #Some additional endpoints are provided by djoser, ex) /users/
-urlpatterns = [
+sub_patterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('djoser.urls')),
     path('api/v1/', include('djoser.urls.authtoken')),
     path('api/v1/', include('src.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns = [
+    path('backend/', include(sub_patterns)),
+]
