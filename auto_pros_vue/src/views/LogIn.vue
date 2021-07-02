@@ -91,7 +91,7 @@ export default {
         async submitForm() {
             this.resetErrors()
             axios.defaults.headers.common["Authorization"] = ""
-            sessionStorage.removeItem("token")
+            localStorage.removeItem("token")
 
             const emailIsNotValid = this.emailIsNotValid(this.email)
             if (emailIsNotValid) {
@@ -108,7 +108,7 @@ export default {
                     email: this.email,
                     password: this.password
                 }
-
+                
                 await axios
                 .post("/api/v1/token/login/", formData)
                 .then(response => {
@@ -116,7 +116,7 @@ export default {
                     this.$store.commit('setToken', token)
                         
                     axios.defaults.headers.common["Authorization"] = "Token " + token
-                    sessionStorage.setItem("token", token)
+                    localStorage.setItem("token", token)
                     //Luke: eventually make this only if they a consumer user or something
                     const toPath = this.$route.query.to || '/business-listings'
                     this.$router.push(toPath)

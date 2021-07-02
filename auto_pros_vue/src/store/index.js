@@ -7,8 +7,8 @@ export default createStore({
   },
   mutations: {
     initializeStore(state) {
-      if (sessionStorage.getItem('token')) {
-          state.token = sessionStorage.getItem('token')
+      if (localStorage.getItem('token')) {
+          state.token = localStorage.getItem('token')
           state.isAuthenticated = true
       } else {
           state.token = ''
