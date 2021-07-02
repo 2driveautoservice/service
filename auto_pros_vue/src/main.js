@@ -6,7 +6,7 @@ import axios from 'axios'
 
 //Luke: Set url for starting the frontend
 
-axios.defaults.baseURL = 'http://127.0.0.1:8000'
+axios.defaults.baseURL = 'https://autopros.app/backend'
 
 //Luke: Added axios to help mount app? Probably keep it the same if using axios
 createApp(App).use(store).use(router, axios).mount('#app')
