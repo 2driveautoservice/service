@@ -4,8 +4,6 @@
 
 <style lang="scss">
 //Import css frameworks and stuff like bulma
-//Luke: before create can be used to initialize, this.$store.commit(functiontocall)
-//Luke: computed: can be used to compute a value on screen based on other page items
 
 @import '../node_modules/bulma';
 //Or specify the fonts and stuff yourself
