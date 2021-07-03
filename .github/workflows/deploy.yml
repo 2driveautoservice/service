@@ -25,34 +25,57 @@ jobs:
           script: | 
             # Update production repo
             cd ~/repo/service
-            git fetch origin master --quiet # --quiet prevents output
-            git reset --hard origin/master --quiet # --quiet prevents output
+            git clean -xdf
+            git fetch origin master 
+            git reset --hard origin/master 
             echo 'Finished updating the production repo'
             
             # Set up secret production database settings locally
-            export DJANGO_SETTINGS_MODULE=source.settings.prod
+            # Secrets
             export DATABASE_NAME=${{ secrets.DATABASE_NAME }}
             export DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}
             export DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
             export DATABASE_HOST=${{ secrets.DATABASE_HOST }}
             export DATABASE_PORT=${{ secrets.DATABASE_PORT }}
+            # ** Django and gunicorn environment variables are created inside $DJANGO_VENV_DIR/bin/gunicorn_start
+            # ** Some hardcoded values exist inside sites-available/autopros.app
+            # ** Other non-secrets sourced inside ~/.bashrc **
             echo 'Finished setting environment variables locally'
-            
-            # Update database using liquibase
-            cd liquibase
-            liquibase --defaultsFile=liquibase-prod.properties update
-            echo 'Finished updating database with liquibase'
-            
+
             # Install Django project dependencies locally in a virtualenv
+            cd auto_pros_django
             pipenv install
             source "$(pipenv --venv)/bin/activate"
             echo 'Finished installing dependencies into virtual environment'
             
-            #Check to see if gunicorn is now a dependency
-            gunicorn -v
-            echo 'gunicorn was sucessfully installed'
+            # Update database schema
+            python manage.py makemigrations
+            python manage.py migrate
+            echo 'Finished updating database schema'
+
+            # Collect static files for django (images, css, etc)
+            python manage.py collectstatic
+            echo 'Finished creating static files'
+
+            #Deactivate pipenv
             deactivate
-            echo 'Completed deployment successfully'
+
+            # Install vue dependencies
+            cd ../auto_pros_vue
+            npm install
+            echo 'Finished installing vue dependencies'
+
+            # Create production build of vue project
+            npm run build
+            echo 'Finished creating vue production build'
+            
+            # Refresh backend and frontend
+            cd ~
+            sudo service nginx restart
+            supervisorctl restart auto_pros_django
+            echo 'Finished refreshing backend and frontend'
+
+            echo 'Completed deployment to production successfully'
             
             
             
