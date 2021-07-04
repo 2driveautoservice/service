@@ -71,7 +71,7 @@ jobs:
             
             # Refresh backend and frontend
             cd ~
-            sudo service nginx restart -n
+            sudo /bin/systemctl restart nginx.service
             supervisorctl restart auto_pros_django
             echo 'Finished refreshing backend and frontend'
 
