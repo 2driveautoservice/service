@@ -24,58 +24,57 @@ jobs:
           script_stop: true
           script: | 
             # Update production repo
+            echo '====[Starting: updating the production repo]===='
             cd ~/repo/service
             git clean -xdf
             git fetch origin master 
             git reset --hard origin/master 
-            echo 'Finished updating the production repo'
+            echo '====[Finished: updating the production repo]===='
             
-            # Set up secret production database settings locally
-            # Secrets
-            export DATABASE_NAME=${{ secrets.DATABASE_NAME }}
-            export DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}
-            export DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
-            export DATABASE_HOST=${{ secrets.DATABASE_HOST }}
-            export DATABASE_PORT=${{ secrets.DATABASE_PORT }}
-            # ** Django and gunicorn environment variables are created inside $DJANGO_VENV_DIR/bin/gunicorn_start
-            # ** Some hardcoded values exist inside sites-available/autopros.app
-            # ** Other non-secrets sourced inside ~/.bashrc **
-            echo 'Finished setting environment variables locally'
+            # Settings located in $DJANGO_VENV_DIR/bin/gunicorn_start, sites-available/autopros.app and ~/.bashrc
 
             # Install Django project dependencies locally in a virtualenv
+            echo '====[Starting: installing dependencies into virtual environment]===='
             cd auto_pros_django
             pipenv install
             source "$(pipenv --venv)/bin/activate"
-            echo 'Finished installing dependencies into virtual environment'
+            echo '====[Finished: installing dependencies into virtual environment]===='
             
             # Update database schema
+            echo '====[Starting: updating database schema]===='
             python manage.py makemigrations
             python manage.py migrate
-            echo 'Finished updating database schema'
+            echo '====[Finished: updating database schema]===='
 
             # Collect static files for django (images, css, etc)
+            echo '====[Starting: creating static files]===='
             python manage.py collectstatic
-            echo 'Finished creating static files'
+            echo '====[Finished: creating static files]===='
 
             #Deactivate pipenv
+            echo '====[Starting: deactivating pipenv]===='
             deactivate
+            echo '====[Finished: deactivating pipenv]===='
 
             # Install vue dependencies
+            echo '====[Starting: installing vue dependencies]===='
             cd ../auto_pros_vue
             npm install
-            echo 'Finished installing vue dependencies'
+            echo '====[Finished: installing vue dependencies]===='
 
             # Create production build of vue project
+            echo '====[Starting: creating vue production build]===='
             npm run build
-            echo 'Finished creating vue production build'
+            echo '====[Finished: creating vue production build]===='
             
             # Refresh backend and frontend
+            echo '====[Starting: refreshing backend and frontend]===='
             cd ~
             sudo /bin/systemctl restart nginx.service
             supervisorctl restart auto_pros_django
-            echo 'Finished refreshing backend and frontend'
+            echo '====[Finished: refreshing backend and frontend]===='
 
-            echo 'Completed deployment to production successfully'
+            echo '====[Completed deployment to production successfully]===='
             
             
             
