@@ -77,7 +77,7 @@
         </div>
       </div>
     </nav>
-    <div class="columns" id="columns-filter">
+    <div class="columns is-mobile" id="columns-filter">
       <div class="column is-four-fifths py-1">
         <div class="box" id="query-string">
           {{ query_string }}
@@ -98,18 +98,8 @@
               </label>
               <br>
               <label class="radio">
-                <input type="radio" v-on:click="filterByStarScore" name="radio-sort">
-                  Star Score
-              </label>
-              <br>
-              <label class="radio">
                 <input type="radio" v-on:click="filterByRecentRating" name="radio-sort">
                   Recently Reviewed
-              </label>
-              <br>
-              <label class="radio">
-                <input type="radio" v-on:click="filterByBestOfHomestars" name="radio-sort">
-                  Best of Homestars
               </label>
             </div>
           </div>
@@ -118,7 +108,7 @@
     </div>
     <div class="business-boxes">
       <div class="box" id="borderBox-companies">
-        <div class="columns is-multiline is-variable is-0">
+        <div class="columns is-multiline is-variable is-mobile is-0">
           <CompanyBox 
             v-for="company in filtered_companies"
             v-bind:key="company.id"
@@ -132,6 +122,7 @@
 <style>
 .navbar {
   height: 4rem;
+  width: 100%;
 }
 .navbar-start {
   margin-left: 4rem;
@@ -280,12 +271,8 @@ export default {
     async filterByRating() {
       this.filtered_companies = this.filtered_companies.sort((a, b) => b.get_rating - a.get_rating)
     },
-    async filterByStarScore() {
-    },
     async filterByRecentRating() {
       this.filtered_companies = this.filtered_companies.sort((a, b) => new Date(b.get_recent_rating) - new Date(a.get_recent_rating))
-    },
-    async filterByBestOfHomestars() {
     },
     async submitForm() {
       var location_company_list = []
