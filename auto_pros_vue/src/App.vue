@@ -13,9 +13,15 @@ body,
   text-align: center;
   min-height: 100%;
   height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
+  position:fixed;
+  top:0;
+  left:0;
 }
+
+
 </style>
 
 

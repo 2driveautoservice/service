@@ -1,9 +1,9 @@
 <template>
     <div class="log-in" id="app">
-        <div class="columns is-vcentered" id="app">
-            <div class="column is-three-fifths p-0" id="app" >
-                <figure class="image" id="app">
-                        <img src="../assets/media/autopros_auth_image.png" alt="Error loading image" id="app">
+        <div class="columns is-vcentered" id="side-image">
+            <div class="column is-three-fifths p-0" id="side-image" >
+                <figure class="image" id="side-image">
+                        <img src="../assets/media/autopros_auth_image.png" alt="Error loading image" id="side-image">
                 </figure>
             </div>
             <div class="column is-3 is-offset-1" >
@@ -51,6 +51,13 @@
 </template>
 
 <style>
+#side-image {
+  text-align: center;
+  min-height: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 </style>
 
 <script>
