@@ -3,7 +3,7 @@
         <div class="box">
             <article class="media">
                 <div class="media-left mt-3 ml-3">
-                    <figure class="image is-128x128">
+                    <figure class="image">
                         <img v-bind:src="company.get_image">
                     </figure>
                 </div>
@@ -16,15 +16,16 @@
                                 <strong style="font-size:0.875rem">{{ company.get_description }}</strong>
                             </div>
                             <br>
-                            User Rating:<star-rating :rating="company.get_rating" :star-style="starStyle" :is-indicator-active="false"></star-rating>
+                            User rating:
                         </p>
+                        <star-rating :rating="company.get_rating" :star-style="starStyle" :is-indicator-active="false"></star-rating>
                     </div>
                 </div>
             </article>
         </div>
     </div>
     <div class="column is-one-fifth py-1">
-        <div class="box px-3">
+        <div class="box px-3" id="button-box">
             <div class="quote" style="margin-bottom:0.938rem">
                 <a class="button is-success" style="font-size:0.938rem;">GET A QUOTE</a>
             </div>
@@ -41,17 +42,18 @@
 }
 .button {
     width:100%;
-    height:100%;
-}
-.star-rating {
-    width:40%;
+    height: auto;
 }
 .box {
-    height:10rem;
     border-radius:0rem;
+    height: 100%;
 }
-.description-container {
-    height:2rem;
+#button-box {
+    align-items: center;
+}
+.media-left {
+    height: auto;
+    width: 15%;
 }
 </style>
 
@@ -65,7 +67,7 @@ export default {
             starStyle: {
                 fullStarColor: '#ed8a19',
                 emptyStarColor: '#737373',
-                starWidth: 30,
+                starWidth: 15,
                 starHeight: 25,
             }
         }
