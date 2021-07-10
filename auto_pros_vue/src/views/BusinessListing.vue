@@ -2,11 +2,14 @@
   <div class="business-listing" id="app">
     <nav class="navbar is-white">
       <div class="navbar-brand">
-        <figure class="image is-64x64">
           <img src="../assets/media/autopros_logo.png" alt="Logo">
-        </figure>
+          <div class="navbar-burger burger" data-target="navMenu" :class="{ 'is-active': isHamburgerOpen }" v-on:click="openHamburgerMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
       </div>
-      <div class="navbar-menu">
+      <div id="navMenu" class="navbar-menu" :class="{ 'is-active': isHamburgerOpen }">
         <div class="navbar-start" id="navbar-links">
           <a class="navbar-item">
             Browse Categories
@@ -20,63 +23,41 @@
         </div>
       </div>
     </nav>
-    <nav class="navbar has-background-white-ter">
-      <div class="navbar-menu">
-        <div class="navbar-start">
-          <form class="form-inline" @submit.prevent="submitForm" novalidate>
-            <div class="navbar-item" id="category-select">
-              <div class="field">
-                <div class="control">
-                  <div class="select">
-                    <select v-model="service_category_choice">
-                      <option value="" selected disabled>Choose a Category</option>
-                      <option v-bind:value="{name:service.name, companies:service.get_companies}" v-for="service in serviceCategories">
-                        {{ service.name }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="navbar-item">
-              near
-            </div>
-            <div class="navbar-item">
-              <div class="field">
-                <div class="control">
-                  <input class="input" type="search" v-model="location_choice" list="filtered-location-list">
-                  <datalist id="filtered-location-list">
-                    <option v-for="i in filterLocations" >{{ i }}</option>
-                  </datalist>
-                </div>
-              </div>
-            </div>
-            <div class="navbar-item">
-              <div class="field">
-                <div class="control">
-                  <button class="button" id="icon-button"><i class="fa fa-search"></i></button>
-                </div>
-              </div>
-            </div>
-          </form>
+    <form class="form-inline" @submit.prevent="submitForm" novalidate>
+      <div class="control">
+        <div class="select">
+          <select v-model="service_category_choice">
+            <option value="" selected disabled>Choose a Category</option>
+            <option v-bind:value="{name:service.name, companies:service.get_companies}" v-for="service in serviceCategories">
+              {{ service.name }}
+            </option>
+          </select>
         </div>
       </div>
-    </nav>
-    <nav class="navbar is-white">
-      <div class="navbar-menu">
-        <div class="navbar-start">
-          <div class="tabs">
-            <ul>
-              <li class="is-active" id="matches">
-                <a>
-                  Category Match ({{ getNumOfMatches }})
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
+      <div class="control">
+        <p> near </p>
       </div>
-    </nav>
+      <div class="control">
+        <input class="input" type="search" v-model="location_choice" list="filtered-location-list">
+        <datalist id="filtered-location-list">
+          <option v-for="i in filterLocations" >{{ i }}</option>
+        </datalist>
+      </div>
+      <div class="control">
+        <button class="button" id="icon-button"><i class="fa fa-search"></i></button>
+      </div>
+    </form>
+    <div id="navbar-tabs">
+      <div class="tabs">
+        <ul>
+          <li class="is-active" id="matches">
+            <a>
+              Category Match ({{ getNumOfMatches }})
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
     <div class="columns is-mobile" id="columns-filter">
       <div class="column is-four-fifths py-1">
         <div class="box" id="query-string">
@@ -93,12 +74,12 @@
           <div class="card-content">
             <div class="control">
               <label class="radio">
-                <input type="radio" v-on:click="filterByRating" name="radio-sort">
+                <input type="radio" v-on:click="filterByRating" id="radio-sort" name="radio-sort">
                   Avg Custom Rating
               </label>
               <br>
               <label class="radio">
-                <input type="radio" v-on:click="filterByRecentRating" name="radio-sort">
+                <input type="radio" v-on:click="filterByRecentRating" id="radio-sort" name="radio-sort">
                   Recently Reviewed
               </label>
             </div>
@@ -121,14 +102,43 @@
 
 <style>
 .navbar {
-  height: 4rem;
   width: 100%;
+  height: 40px;
 }
-.navbar-start {
-  margin-left: 4rem;
+.navbar-brand {
+  width:4%;
+  height:100%;
+  align-items : center;
 }
-#navbar-links{
-  margin-left: 0;
+img {
+  min-width: 40px;
+}
+.navbar-burger {
+  margin-left: 10px;
+}
+#navbar-tabs {
+  width: 100%;
+  background-color: white;
+}
+.control {
+  margin-right: 1rem;
+}
+.form-inline {  
+  display: flex;
+  width: 100%;
+  margin-left: 1rem;
+  flex-flow: row wrap;
+  align-items: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+#radio-sort {
+  width: 1rem;
+  vertical-align: middle;
+}
+.tabs {
+  padding-top: 1rem;
+  margin-left: 1rem;
 }
 .tabs ul {
   border-bottom-style: none;
@@ -137,20 +147,25 @@
   color: #000000;
   border-bottom-width: medium;
 }
+.navbar-start {
+  margin-left: 1rem;
+}
+#navbar-links{
+  margin-left: 0;
+}
 .business-listing {
   background-color: rgb(242, 246, 250);
 }
 .business-boxes {
-  width: 50rem;
-  height: 18.75rem;
+  width: 50%;
+  height: 50%;
 }
 #borderBox-companies {
-    height: 30rem;
-    width: 50rem;
+    height: 100%;
+    width: 100%;
     border-radius:0rem;
     overflow: auto;
-    margin-left: 4rem;
-    margin-top: 2rem;
+    margin-left: 1rem;
 }
 #icon-button {
   border-radius:0.2rem;
@@ -160,8 +175,7 @@
   background-color: #3273dc;
 }
 #columns-filter {
-  width:70rem;
-  height:5rem;
+  width:70%;
   margin-top:1rem;
 }
 .card-header {
@@ -174,23 +188,19 @@
   color: white;
 }
 #query-string {
-  height:6rem;
+  height:80%;
   font-size:2rem;
-  margin-left:4rem;
+  margin-left:1rem;
   text-align: left;
+  vertical-align: middle;
 }
 .card-content {
-  padding: 0.8rem 0.8rem 0.8rem 0.8rem;
+  padding: 0.5rem 0rem 0.5rem 0.5rem;
   background-color:white;
   text-align: left;
 }
 #category-select {
   padding-left:0;
-}
-.form-inline {  
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
 }
 </style>
 
@@ -210,6 +220,7 @@ export default {
         location_choice: '',
         query_string: 'Search: ',
         radio_sort: '',
+        isHamburgerOpen: false,
       }
   },
   components: {
@@ -247,6 +258,9 @@ export default {
         .catch(error => {
           console.log(error)
         })
+    },
+    openHamburgerMenu() {
+        this.isHamburgerOpen = !this.isHamburgerOpen;
     },
     async getServiceCategories() {
       await axios

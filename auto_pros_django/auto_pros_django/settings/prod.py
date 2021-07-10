@@ -7,7 +7,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['autopros.app', 'localhost']
 
-HOST_DOMAIN = 'https://' +  ALLOWED_HOSTS[0]
+HOST_DOMAIN = 'https://' +  ALLOWED_HOSTS[0] + '/backend'
 
 # Luke: modified for cors
 CORS_ALLOWED_ORIGINS = [

@@ -19,8 +19,13 @@ body,
   top:0;
   left:0;
 }
-
-
+@media all and (min-width: 100px)  {  html, body, #app  { font-size:0.30em;  } }
+@media all and (min-width: 700px)  {  html, body, #app  { font-size:0.40em;  } }
+@media all and (min-width: 900px)  {  html, body, #app  { font-size:0.50em;  } }
+@media all and (min-width: 1100px)  {  html, body, #app  { font-size:0.60em;  } }
+@media all and (min-width: 1300px) {  html, body, #app  { font-size:0.70em;  } }
+@media all and (min-width: 1500px) {  html, body, #app  { font-size:0.90em;  } }
+@media all and (min-width: 1700px) {  html, body, #app  { font-size:1.0em;  } }
 </style>
 
 
