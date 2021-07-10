@@ -1,6 +1,6 @@
 <template>
     <div class="sign-up" id="app">
-        <div class="columns is-vcentered" id="side-image">
+        <div class="columns is-vcentered is-mobile" id="side-image">
             <div class="column is-three-fifths p-0" id="side-image">
                 <figure class="image" id="side-image">
                         <img src="../assets/media/autopros_auth_image.png" alt="Error loading image" id="side-image">
