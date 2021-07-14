@@ -3,10 +3,9 @@
 </template>
 
 <style lang="scss">
-//Import css frameworks and stuff like bulma
-
 @import '../node_modules/bulma';
-//Or specify the fonts and stuff yourself
+
+//Properties that all pages have in common
 html,
 body,
 #app {
@@ -14,11 +13,13 @@ body,
   min-height: 100%;
   height: 100%;
   width: 100%;
-  margin: 0;
-  padding: 0;
-  top:0;
-  left:0;
 }
+
+p {
+  font-size: 1rem;
+}
+
+//Auto resize font's based on screen width
 @media all and (min-width: 100px)  {  html, body, #app  { font-size:0.30em;  } }
 @media all and (min-width: 700px)  {  html, body, #app  { font-size:0.40em;  } }
 @media all and (min-width: 900px)  {  html, body, #app  { font-size:0.50em;  } }

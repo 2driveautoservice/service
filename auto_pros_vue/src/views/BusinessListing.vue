@@ -1,28 +1,6 @@
 <template>
   <div class="business-listing" id="app">
-    <nav class="navbar is-white">
-      <div class="navbar-brand">
-          <img src="../assets/media/autopros_logo.png" alt="Logo">
-          <div class="navbar-burger burger" data-target="navMenu" :class="{ 'is-active': isHamburgerOpen }" v-on:click="openHamburgerMenu">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-      </div>
-      <div id="navMenu" class="navbar-menu" :class="{ 'is-active': isHamburgerOpen }">
-        <div class="navbar-start" id="navbar-links">
-          <a class="navbar-item">
-            Browse Categories
-          </a>
-          <a class="navbar-item">
-            Blog
-          </a>
-          <a class="navbar-item">
-            Write a Review
-          </a>
-        </div>
-      </div>
-    </nav>
+    <Navbar></Navbar>
     <form class="form-inline" @submit.prevent="submitForm" novalidate>
       <div class="control">
         <div class="select">
@@ -101,21 +79,6 @@
 </template>
 
 <style>
-.navbar {
-  width: 100%;
-  height: 40px;
-}
-.navbar-brand {
-  width:4%;
-  height:100%;
-  align-items : center;
-}
-img {
-  min-width: 40px;
-}
-.navbar-burger {
-  margin-left: 10px;
-}
 #navbar-tabs {
   width: 100%;
   background-color: white;
@@ -146,12 +109,6 @@ img {
 .tabs li.is-active a {
   color: #000000;
   border-bottom-width: medium;
-}
-.navbar-start {
-  margin-left: 1rem;
-}
-#navbar-links{
-  margin-left: 0;
 }
 .business-listing {
   background-color: rgb(242, 246, 250);
@@ -207,6 +164,7 @@ img {
 <script>
 import axios from 'axios'
 import CompanyBox from '@/components/CompanyBox'
+import Navbar from '@/components/Navbar'
 
 export default {
   name: 'BusinessListing',
@@ -224,7 +182,8 @@ export default {
       }
   },
   components: {
-    CompanyBox
+    CompanyBox,
+    Navbar
   },
   mounted() {
     this.initializeCompanies()
