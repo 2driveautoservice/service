@@ -178,7 +178,6 @@ export default {
         location_choice: '',
         query_string: 'Search: ',
         radio_sort: '',
-        isHamburgerOpen: false,
       }
   },
   components: {
@@ -217,9 +216,6 @@ export default {
         .catch(error => {
           console.log(error)
         })
-    },
-    openHamburgerMenu() {
-        this.isHamburgerOpen = !this.isHamburgerOpen;
     },
     async getServiceCategories() {
       await axios

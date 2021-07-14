@@ -47,3 +47,19 @@ img {
     min-width: 40px;
 }
 </style>
+
+<script>
+export default {
+  name: 'Navbar',
+  data() {
+      return {
+        isHamburgerOpen: false,
+    }
+  },
+  methods: {
+    openHamburgerMenu() {
+          this.isHamburgerOpen = !this.isHamburgerOpen;
+      }
+  }
+}
+</script>
