@@ -5,6 +5,7 @@ from django.db.models import Avg, Func, FloatField
 from django.conf import settings
 
 from PIL import Image
+from datetime import datetime
 
 from .managers import CustomUserManager
 
@@ -42,10 +43,16 @@ class Company(models.Model):
         return self.name
 
     def get_rating(self):
-        return self.rating_set.aggregate(rounded_rating_avg=Round(Avg('rating'), 1, output_field=FloatField()))['rounded_rating_avg']
+        if not self.rating_set.all():
+            return 0
+        else:
+            return self.rating_set.aggregate(rounded_rating_avg=Round(Avg('rating'), 1, output_field=FloatField()))['rounded_rating_avg']
     
     def get_recent_rating(self):
-        return self.rating_set.all().order_by('-date_created')[0].date_created
+        if not self.rating_set.all():
+            return datetime.min
+        else:
+            return self.rating_set.all().order_by('-date_created')[0].date_created
     
     def get_general_profile(self):
         try:
@@ -174,7 +181,7 @@ class GeneralProfile(models.Model):
             return 'Profile id: ' + self.id
     
 class BusinessOwnerProfile(models.Model):
-    description = models.TextField(default='')
+    description = models.TextField(default='', max_length=255)
 
     profile = models.OneToOneField(
         GeneralProfile,
