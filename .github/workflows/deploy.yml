@@ -26,7 +26,7 @@ jobs:
             # Update production repo
             echo '====[Starting: updating the production repo]===='
             cd ~/repo/service
-            git clean -xdf
+            git clean -df
             git fetch origin master 
             git reset --hard origin/master 
             echo '====[Finished: updating the production repo]===='
