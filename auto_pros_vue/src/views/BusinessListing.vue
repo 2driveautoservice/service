@@ -4,9 +4,9 @@
     <form class="form-inline" @submit.prevent="submitForm" novalidate>
       <div class="control">
         <div class="select">
-          <select v-model="service_category_choice">
+          <select v-model="service_choice" v-on:change="filterServiceChoiceCategories">
             <option value="" selected disabled>Choose a Category</option>
-            <option v-bind:value="{name:service.name, companies:service.get_companies}" v-for="service in serviceCategories">
+            <option v-bind:value="{id: service.id, name: service.name, parent: service.parent, companies: service.get_companies}" v-for="service in service_categories">
               {{ service.name }}
             </option>
           </select>
@@ -156,9 +156,6 @@
   background-color:white;
   text-align: left;
 }
-#category-select {
-  padding-left:0;
-}
 </style>
 
 <script>
@@ -172,9 +169,10 @@ export default {
       return {
         companies: [],
         filtered_companies: [],
-        serviceCategories: [],
+        service_categories: [],
+        services: [],
         locations: [],
-        service_category_choice: '',
+        service_choice: '',
         location_choice: '',
         query_string: 'Search: ',
         radio_sort: '',
@@ -186,8 +184,8 @@ export default {
   },
   mounted() {
     this.initializeCompanies()
-    this.getLocations()
-    this.getServiceCategories()
+    this.initializeLocations()
+    this.initializeServices()
     document.title = 'Business Listings'
   },
   computed: {
@@ -217,17 +215,18 @@ export default {
           console.log(error)
         })
     },
-    async getServiceCategories() {
+    async initializeServices() {
       await axios
-        .get('/api/v1/get-service-categories/')
+        .get('/api/v1/get-services/')
         .then(response => {
-          this.serviceCategories = response.data
+          this.services = response.data
+          this.service_categories = this.services.filter(i => i.parent == null)
         })
         .catch(error => {
           console.log(error)
         })
     },
-    async getLocations() {
+    async initializeLocations() {
       await axios
         .get('/api/v1/get-locations/')
         .then(response => {
@@ -243,19 +242,34 @@ export default {
     async filterByRecentRating() {
       this.filtered_companies = this.filtered_companies.sort((a, b) => new Date(b.get_recent_rating) - new Date(a.get_recent_rating))
     },
+    async filterServiceChoiceCategories() {
+      if (!this.service_choice) {
+        this.initializeServices()
+      } else {
+        this.service_categories = this.services.filter(i => (i.parent != null && i.parent == this.service_choice.id) || (i.id == this.service_choice.id))
+      }
+    },
     async submitForm() {
-      var location_company_list = []
-      var service_company_list = []
       this.filtered_companies = this.companies
       this.query_string = 'Search:'
-      if (this.service_category_choice){
-        for (const i of this.service_category_choice.companies) {
-          service_company_list.push(i)
-        }
+      if (this.service_choice){
+        var service_company_list = []
+        var current_service = this.service_choice
+        do {
+          for (const i of current_service.companies) {
+            if (!(service_company_list.includes(i))) {
+              service_company_list.push(i)
+            }
+          }
+          if (current_service.parent != null) {
+            current_service = this.services.find(i => i.id == current_service.parent)
+          }
+        } while (current_service.parent != null)
         this.filtered_companies = this.filtered_companies.filter(i => service_company_list.includes(i.id))
-        this.query_string += ' ' + this.service_category_choice.name
+        this.query_string += ' ' + this.service_choice.name
       }
       if (this.location_choice){
+        var location_company_list = []
         this.locations.forEach( i => {
           if (i.get_region.toLowerCase() === this.location_choice.toLowerCase() && !(location_company_list.includes(i.company))) {
             location_company_list.push(i.company)
@@ -264,10 +278,11 @@ export default {
         this.filtered_companies = this.filtered_companies.filter(i => location_company_list.includes(i.id))
         this.query_string += ' in ' + this.location_choice
       }
-      if (!this.location_choice && !this.service_category_choice) {
+      if (!this.location_choice && !this.service_choice) {
         this.filtered_companies = this.companies
       }
-      this.service_category_choice = ''
+      this.service_choice = ''
+      this.initializeServices()
       this.location_choice = ''
     },
   }

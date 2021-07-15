@@ -20,10 +20,10 @@ class LocationList(APIView):
         serializer = LocationSerializer(location_list, many=True)
         return Response(serializer.data)
 
-class CategoryServiceList(APIView):
+class ServiceList(APIView):
     def get(self, request, format=None):
-        category_service_list = Service.objects.all().filter(parent__isnull=True)
-        serializer = ServiceSerializer(category_service_list, many=True)
+        service_list = Service.objects.all()
+        serializer = ServiceSerializer(service_list, many=True)
         return Response(serializer.data)
     
 
