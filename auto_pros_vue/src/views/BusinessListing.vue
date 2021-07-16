@@ -3,14 +3,10 @@
     <Navbar></Navbar>
     <form class="form-inline" @submit.prevent="submitForm" novalidate>
       <div class="control">
-        <div class="select">
-          <select v-model="service_choice" v-on:change="filterServiceChoiceCategories">
-            <option value="" selected disabled>Choose a Category</option>
-            <option v-bind:value="{id: service.id, name: service.name, parent: service.parent, companies: service.get_companies}" v-for="service in service_categories">
-              {{ service.name }}
-            </option>
-          </select>
-        </div>
+        <input placeholder="What would you like help with?" class="input" type="search" v-model="service_choice" list="filtered-service-list">
+        <datalist id="filtered-service-list">
+          <option v-for="service in filterServiceQueries" >{{ service }}</option>
+        </datalist>
       </div>
       <div class="control">
         <p> near </p>
@@ -18,7 +14,7 @@
       <div class="control">
         <input class="input" type="search" v-model="location_choice" list="filtered-location-list">
         <datalist id="filtered-location-list">
-          <option v-for="i in filterLocations" >{{ i }}</option>
+          <option v-for="location in filterLocations" >{{ location }}</option>
         </datalist>
       </div>
       <div class="control">
@@ -130,6 +126,7 @@
   width: 2.5rem;
   height: 2.5rem;
   background-color: #3273dc;
+  margin-bottom: 0;
 }
 #columns-filter {
   width:70%;
@@ -169,7 +166,7 @@ export default {
       return {
         companies: [],
         filtered_companies: [],
-        service_categories: [],
+        service_queries: [],
         services: [],
         locations: [],
         service_choice: '',
@@ -194,13 +191,23 @@ export default {
     },
     filterLocations: function () {
       if (this.location_choice) {
-        var temp_locations = this.locations.filter(i => (i.get_region.toLowerCase().indexOf(this.location_choice.toLowerCase()) !== -1)) 
-        temp_locations = temp_locations.map(i => i.get_region)
+        var temp_locations = this.locations.filter(location => (location.get_region.toLowerCase().indexOf(this.location_choice.toLowerCase()) !== -1)) 
+        temp_locations = temp_locations.map(location => location.get_region)
       }else {
-        var temp_locations = this.locations.map(i => i.get_region)
+        var temp_locations = this.locations.map(location => location.get_region)
       }
       var temp_locations_array = [...new Set(temp_locations)]
       return temp_locations_array
+    },
+    filterServiceQueries: function () {
+      if (this.service_choice) {
+        var temp_services = this.service_queries.filter(service => (service.name.toLowerCase().indexOf(this.service_choice.toLowerCase()) !== -1)) 
+        temp_services = temp_services.map(service => service.name)
+      }else {
+        var temp_services = this.service_queries.map(service => service.name)
+      }
+      var temp_services_array = [...new Set(temp_services)]
+      return temp_services_array
     }
   },
   methods: {
@@ -220,7 +227,7 @@ export default {
         .get('/api/v1/get-services/')
         .then(response => {
           this.services = response.data
-          this.service_categories = this.services.filter(i => i.parent == null)
+          this.service_queries = this.services.filter(leafService => !(this.services.filter(service => service.parent == leafService.id)).length).sort((a, b) => (a.name < b.name))
         })
         .catch(error => {
           console.log(error)
@@ -242,40 +249,35 @@ export default {
     async filterByRecentRating() {
       this.filtered_companies = this.filtered_companies.sort((a, b) => new Date(b.get_recent_rating) - new Date(a.get_recent_rating))
     },
-    async filterServiceChoiceCategories() {
-      if (!this.service_choice) {
-        this.initializeServices()
-      } else {
-        this.service_categories = this.services.filter(i => (i.parent != null && i.parent == this.service_choice.id) || (i.id == this.service_choice.id))
-      }
-    },
     async submitForm() {
       this.filtered_companies = this.companies
-      this.query_string = 'Search:'
-      if (this.service_choice){
+      this.query_string = 'Search: '
+      if (this.service_choice) {
         var service_company_list = []
-        var current_service = this.service_choice
-        do {
-          for (const i of current_service.companies) {
-            if (!(service_company_list.includes(i))) {
-              service_company_list.push(i)
+        var current_service = this.services.find(service => service.name == this.service_choice)
+        while (true) {
+          current_service.get_companies.forEach(company => {
+            if (!(service_company_list.includes(company))) {
+              service_company_list.push(company)
             }
-          }
+          })
           if (current_service.parent != null) {
-            current_service = this.services.find(i => i.id == current_service.parent)
+            current_service = this.services.find(service => service.id == current_service.parent)
+          } else {
+            break
           }
-        } while (current_service.parent != null)
-        this.filtered_companies = this.filtered_companies.filter(i => service_company_list.includes(i.id))
-        this.query_string += ' ' + this.service_choice.name
+        }
+        this.filtered_companies = this.filtered_companies.filter(company => service_company_list.includes(company.id))
+        this.query_string += ' ' + this.service_choice
       }
-      if (this.location_choice){
+      if (this.location_choice) {
         var location_company_list = []
-        this.locations.forEach( i => {
-          if (i.get_region.toLowerCase() === this.location_choice.toLowerCase() && !(location_company_list.includes(i.company))) {
-            location_company_list.push(i.company)
+        this.locations.forEach( location => {
+          if (location.get_region.toLowerCase() === this.location_choice.toLowerCase() && !(location_company_list.includes(location.company))) {
+            location_company_list.push(location.company)
           }
         })
-        this.filtered_companies = this.filtered_companies.filter(i => location_company_list.includes(i.id))
+        this.filtered_companies = this.filtered_companies.filter(company => location_company_list.includes(company.id))
         this.query_string += ' in ' + this.location_choice
       }
       if (!this.location_choice && !this.service_choice) {
@@ -284,7 +286,7 @@ export default {
       this.service_choice = ''
       this.initializeServices()
       this.location_choice = ''
-    },
+    }
   }
 }
 </script>
