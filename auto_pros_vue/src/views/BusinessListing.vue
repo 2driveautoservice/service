@@ -2,7 +2,7 @@
   <div class="business-listing" id="app">
     <Navbar></Navbar>
     <form class="form-inline" @submit.prevent="submitForm" novalidate>
-      <div class="control">
+      <div class="control" id="search-service">
         <input placeholder="What would you like help with?" class="input" type="search" v-model="service_choice" list="filtered-service-list">
         <datalist id="filtered-service-list">
           <option v-for="service in filterServiceQueries" >{{ service }}</option>
@@ -90,6 +90,10 @@
   align-items: center;
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+#search-service {
+  width: 20%;
+  min-width: 95px;
 }
 #radio-sort {
   width: 1rem;
@@ -254,17 +258,19 @@ export default {
       this.query_string = 'Search: '
       if (this.service_choice) {
         var service_company_list = []
-        var current_service = this.services.find(service => service.name == this.service_choice)
-        while (true) {
-          current_service.get_companies.forEach(company => {
-            if (!(service_company_list.includes(company))) {
-              service_company_list.push(company)
+        var current_service = this.services.find(service => service.name == this.service_choice.toLowerCase())
+        if (current_service) {
+          while (true) {
+            current_service.get_companies.forEach(company => {
+              if (!(service_company_list.includes(company))) {
+                service_company_list.push(company)
+              }
+            })
+            if (current_service.parent != null) {
+              current_service = this.services.find(service => service.id == current_service.parent)
+            } else {
+              break
             }
-          })
-          if (current_service.parent != null) {
-            current_service = this.services.find(service => service.id == current_service.parent)
-          } else {
-            break
           }
         }
         this.filtered_companies = this.filtered_companies.filter(company => service_company_list.includes(company.id))
