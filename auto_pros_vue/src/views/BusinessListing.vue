@@ -258,7 +258,7 @@ export default {
       this.query_string = 'Search: '
       if (this.service_choice) {
         var service_company_list = []
-        var current_service = this.services.find(service => service.name == this.service_choice.toLowerCase())
+        var current_service = this.services.find(service => service.name.toLowerCase() == this.service_choice.toLowerCase())
         if (current_service) {
           while (true) {
             current_service.get_companies.forEach(company => {
