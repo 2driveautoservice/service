@@ -33,8 +33,6 @@
 <style>
 .media-content {
     word-break: break-all;
-    white-space: pre-wrap;
-    word-break: keep-all;
     margin-left: 10px;
 }
 .media-left {
