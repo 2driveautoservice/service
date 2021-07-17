@@ -231,7 +231,7 @@ export default {
         .get('/api/v1/get-services/')
         .then(response => {
           this.services = response.data
-          this.service_queries = this.services.filter(leafService => !(this.services.filter(service => service.parent == leafService.id)).length).sort((a, b) => (a.name < b.name))
+          this.service_queries = this.services.filter(leafService => !(this.services.filter(service => service.parent == leafService.id)).length)
         })
         .catch(error => {
           console.log(error)
